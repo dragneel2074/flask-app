@@ -5,20 +5,28 @@
     <title>Website Browser</title>
     <!-- Debug: index.html template loaded -->
     <script>console.debug('index.html loaded');</script>
+    <!-- Debug: Adding Bootstrap 4.5.2 CSS for modern UI -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <!-- Debug: End Bootstrap CSS inclusion -->
 </head>
-<body>
-    <h1>Browse a Website</h1>
-    <!-- Debug: Display error if any -->
-    {% if error %}
-        <p style="color:red;">{{ error }}</p>
-        <script>console.debug('Error: {{ error }}');</script>
-    {% endif %}
-    <form action="/browse" method="post">
-        <label for="url">Enter URL:</label>
-        <input type="text" id="url" name="url" placeholder="https://example.com">
-        <button type="submit">Browse</button>
-    </form>
-    <!-- Debug: Form rendered successfully -->
-    <script>console.debug('Form rendered in index.html');</script>
+<body class="bg-light">
+    <div class="container mt-5">
+        <h1>Browse a Website</h1>
+        <!-- Debug: Display error if any -->
+        {% if error %}
+            <p style="color:red;">{{ error }}</p>
+            <script>console.debug('Error: {{ error }}');</script>
+        {% endif %}
+        <form action="/browse" method="post" class="mt-4">
+            <div class="form-group">
+                <label for="url" class="form-label">Enter URL:</label>
+                <input type="text" id="url" name="url" placeholder="https://example.com" class="form-control" >
+            </div>
+            <button type="submit" class="btn btn-primary">Browse</button>
+        </form>
+        <!-- Debug: Form updated with Bootstrap classes -->
+        <script>console.debug('Form rendered in index.html');</script>
+    </div>
+    <script>console.debug('Modern Bootstrap UI rendered');</script>
 </body>
 </html> 
