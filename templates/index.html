@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Website Browser</title>
+    <!-- Debug: index.html template loaded -->
+    <script>console.debug('index.html loaded');</script>
+</head>
+<body>
+    <h1>Browse a Website</h1>
+    <!-- Debug: Display error if any -->
+    {% if error %}
+        <p style="color:red;">{{ error }}</p>
+        <script>console.debug('Error: {{ error }}');</script>
+    {% endif %}
+    <form action="/browse" method="post">
+        <label for="url">Enter URL:</label>
+        <input type="text" id="url" name="url" placeholder="https://example.com">
+        <button type="submit">Browse</button>
+    </form>
+    <!-- Debug: Form rendered successfully -->
+    <script>console.debug('Form rendered in index.html');</script>
+</body>
+</html> 

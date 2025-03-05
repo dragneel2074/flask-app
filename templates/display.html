@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Website Content</title>
+    <!-- Debug: display.html template loaded -->
+    <script>console.debug('display.html loaded');</script>
+</head>
+<body>
+    <h1>Website Content</h1>
+    <p><strong>URL:</strong> {{ url }}</p>
+    <!-- Debug: Displaying content for URL: {{ url }} -->
+    <div id="website-content">
+        {{ content | safe }}
+    </div>
+    <!-- Debug: Content rendered successfully -->
+    <script>console.debug('Content rendered in display.html for URL: {{ url }}');</script>
+    <br>
+    <a href="/">Back</a>
+
+    <!-- Added script to override link clicks and open them via the app -->
+    <script>
+        console.debug('Attaching event listener to website content links');
+        document.addEventListener('DOMContentLoaded', function() {
+            const contentDiv = document.getElementById('website-content');
+            if(contentDiv) {
+                contentDiv.addEventListener('click', function(event) {
+                    const target = event.target;
+                    if(target.tagName.toLowerCase() === 'a') {
+                        event.preventDefault();
+                        const url = target.getAttribute('href');
+                        console.debug('Link clicked, opening from app: ' + url);
+                        // Redirect to browse route with the clicked URL
+                        window.location.href = '/browse?url=' + encodeURIComponent(url);
+                    }
+                });
+            } else {
+                console.debug('No content container found for website content links.');
+            }
+        });
+    </script>
+</body>
+</html> 

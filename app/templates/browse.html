@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+
+{% block title %}Browsing: {{ url }}{% endblock %}
+
+{% block extra_head %}
+<style>
+    /* Style for the iframe container */
+    .browser-container {
+        width: 100%;
+        height: 75vh;
+        border: 1px solid #ddd;
+        position: relative;
+    }
+    
+    /* Style for the content frame */
+    .content-display {
+        width: 100%;
+        height: 100%;
+        border: none;
+        overflow: auto;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <!-- URL Bar -->
+        <div class="card mb-3">
+            <div class="card-body p-2">
+                <form action="{{ url_for('browse') }}" method="get" class="d-flex">
+                    <div class="input-group">
+                        <button class="btn btn-outline-secondary" type="button" onclick="window.history.back();" title="Go Back">
+                            <i class="bi bi-arrow-left"></i> &#8592;
+                        </button>
+                        <button class="btn btn-outline-secondary" type="button" onclick="window.history.forward();" title="Go Forward">
+                            <i class="bi bi-arrow-right"></i> &#8594;
+                        </button>
+                        <button class="btn btn-outline-secondary" type="button" onclick="location.reload();" title="Reload">
+                            <i class="bi bi-arrow-clockwise"></i> &#8635;
+                        </button>
+                        <input type="text" name="url" class="form-control" value="{{ url }}" required>
+                        <button class="btn btn-primary" type="submit">Go</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <!-- Browser Content Display -->
+        <div class="browser-container">
+            <div class="content-display">
+                {{ content|safe }}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    // Add browser-specific JavaScript here
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('Page loaded: {{ url }}');
+        
+        // Debug - Log all links for inspection
+        const links = document.querySelectorAll('a');
+        console.log(`Found ${links.length} links on the page`);
+    });
+</script>
+{% endblock %} 
