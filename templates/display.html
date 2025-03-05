@@ -2,33 +2,102 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Website Content</title>
     <!-- Debug: display.html template loaded -->
     <script>console.debug('display.html loaded');</script>
+    <!-- Bootstrap 5.2.3 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='custom.css') }}">
+    <!-- Debug: Using external custom.css file -->
 </head>
 <body>
-    <h1>Website Content</h1>
-    <p><strong>URL:</strong> {{ url }}</p>
-    <!-- Debug: Displaying content for URL: {{ url }} -->
-    <div id="website-content">
-        {{ content | safe }}
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="/"><i class="fas fa-globe me-2"></i>Website Browser</a>
+        </div>
+    </nav>
+    
+    <div class="container mt-4">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 class="display-6"><i class="fas fa-newspaper me-2"></i>Website Content</h1>
+            <a href="/" class="btn btn-back text-white"><i class="fas fa-arrow-left me-2"></i>Back to Browser</a>
+        </div>
+        
+        <div class="url-badge">
+            <i class="fas fa-link me-2"></i>{{ url }}
+        </div>
+        <!-- Debug: Displaying content for URL: {{ url }} -->
+        
+        <div class="content-container" id="website-content">
+            {{ content | safe }}
+        </div>
+        <!-- Debug: Content rendered successfully -->
     </div>
-    <!-- Debug: Content rendered successfully -->
-    <script>console.debug('Content rendered in display.html for URL: {{ url }}');</script>
-    <br>
-    <a href="/">Back</a>
+    
+    <!-- Footer -->
+    <footer class="mt-5 py-3 text-center text-muted">
+        <div class="container">
+            <p class="mb-1">Website Browser Tool</p>
+            <small>Safe browsing through our application</small>
+        </div>
+        <!-- Debug: Added footer section -->
+    </footer>
+    
+    <!-- Theme switcher script -->
+    <script src="{{ url_for('static', filename='theme-switcher.js') }}"></script>
+    <!-- Debug: Added theme switcher script -->
+    
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
 
-    <!-- Added script to override link clicks and open them via the app -->
+    <!-- Updated script to handle link clicks properly -->
     <script>
         console.debug('Attaching event listener to website content links');
         document.addEventListener('DOMContentLoaded', function() {
+            // Store the original website URL for resolving relative links
+            const baseUrl = "{{ url }}";
+            console.debug('Base URL for resolving relative links: ' + baseUrl);
+            
+            // Parse the original URL to extract domain components
+            let baseDomain;
+            let baseUrlObj;
+            try {
+                baseUrlObj = new URL(baseUrl);
+                baseDomain = baseUrlObj.origin;
+                console.debug('Base domain extracted: ' + baseDomain);
+            } catch (e) {
+                console.error('Error parsing base URL: ' + e);
+                baseDomain = '';
+            }
+            
             const contentDiv = document.getElementById('website-content');
             if(contentDiv) {
                 contentDiv.addEventListener('click', function(event) {
                     const target = event.target;
                     if(target.tagName.toLowerCase() === 'a') {
                         event.preventDefault();
-                        const url = target.getAttribute('href');
+                        let url = target.getAttribute('href');
+                        
+                        // Resolve relative URLs against the base URL
+                        if (url && url.startsWith('/')) {
+                            // Path relative to domain root
+                            url = baseDomain + url;
+                            console.debug('Resolved root-relative URL to: ' + url);
+                        } else if (url && !url.match(/^https?:\/\//i) && !url.startsWith('#') && !url.startsWith('mailto:')) {
+                            // Path relative to current page (not starting with http:// or https://)
+                            try {
+                                url = new URL(url, baseUrl).href;
+                                console.debug('Resolved relative URL to: ' + url);
+                            } catch (e) {
+                                console.error('Error resolving relative URL: ' + e);
+                            }
+                        }
+                        
                         console.debug('Link clicked, opening from app: ' + url);
                         // Redirect to browse route with the clicked URL
                         window.location.href = '/browse?url=' + encodeURIComponent(url);
@@ -38,6 +107,7 @@
                 console.debug('No content container found for website content links.');
             }
         });
+        console.debug('Display page rendering complete');
     </script>
 </body>
 </html> 

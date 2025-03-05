@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request
 import logging
 from Utils import browse_utils
+from Utils import link_rewriter
 
 app = Flask(__name__)
 
@@ -25,7 +26,10 @@ def browse():
         # Use helper function from Utils to fetch content
         content = browse_utils.fetch_website(url)
         app.logger.debug('Website content fetched successfully')
-        return render_template('display.html', url=url, content=content)
+        # Rewrite links in the fetched content to maintain routing through our /browse route
+        modified_content = link_rewriter.rewrite_links(content, url)
+        app.logger.debug('Rewritten website content with modified links')
+        return render_template('display.html', url=url, content=modified_content)
     except Exception as e:
         app.logger.error(f'Error fetching website: {e}')
         return render_template('index.html', error=str(e))
